@@ -18,6 +18,30 @@
     --black-piece-shadow: 0 0 3px #000, 0 0 6px rgba(0, 0, 0, 0.5);
 }
 
+/* ===== Shared Animations ===== */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes matchmaking-progress {
+    0% { width: 0%; }
+    50% { width: 70%; }
+    100% { width: 100%; }
+}
+
 /* ===== Reset and Base Styles ===== */
 * {
     margin: 0;
@@ -375,17 +399,6 @@ header h1 {
     animation: modalFadeIn 0.3s ease;
 }
 
-@keyframes modalFadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
 .modal-content h2 {
     margin-bottom: 15px;
     color: var(--primary-color);
@@ -473,12 +486,6 @@ header h1 {
     border-top-color: var(--primary-color);
     border-radius: 50%;
     animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
 }
 
 /* ===== Scrollbar Styling ===== */
@@ -692,12 +699,6 @@ header h1 {
     background: linear-gradient(90deg, var(--primary-color), var(--primary-hover));
     border-radius: 3px;
     animation: matchmaking-progress 3s ease-in-out infinite;
-}
-
-@keyframes matchmaking-progress {
-    0% { width: 0%; }
-    50% { width: 70%; }
-    100% { width: 100%; }
 }
 
 /* ===== Responsive Mode Selection ===== */

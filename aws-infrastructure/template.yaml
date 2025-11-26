@@ -671,8 +671,6 @@ Resources:
           - Id: S3Origin
             DomainName: !GetAtt StaticAssetsBucket.RegionalDomainName
             OriginAccessControlId: !Ref CloudFrontOAC
-            S3OriginConfig:
-              OriginAccessIdentity: ''
         DefaultCacheBehavior:
           TargetOriginId: S3Origin
           ViewerProtocolPolicy: redirect-to-https
