@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Vibe Chess</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>♔ Game Vibe Chess ♚</h1>
+        </header>
+        
+        <div class="game-info">
+            <div class="player-info black-player">
+                <span class="player-label">Black</span>
+                <div class="captured-pieces" id="captured-by-white"></div>
+            </div>
+            <div class="turn-indicator">
+                <span id="turn-display">White's Turn</span>
+                <span id="game-status"></span>
+            </div>
+            <div class="player-info white-player">
+                <span class="player-label">White</span>
+                <div class="captured-pieces" id="captured-by-black"></div>
+            </div>
+        </div>
+
+        <div class="game-container">
+            <div class="board-container">
+                <div class="board" id="chessboard"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="mode-selector">
+                <label>Game Mode:</label>
+                <select id="game-mode">
+                    <option value="multiplayer">Multiplayer (2 Players)</option>
+                    <option value="ai-easy">AI - Easy</option>
+                    <option value="ai-medium">AI - Medium</option>
+                    <option value="ai-hard">AI - Hard</option>
+                </select>
+            </div>
+            <div class="button-group">
+                <button id="new-game-btn" class="btn btn-primary">New Game</button>
+                <button id="undo-btn" class="btn btn-secondary">Undo Move</button>
+                <button id="flip-board-btn" class="btn btn-secondary">Flip Board</button>
+            </div>
+        </div>
+
+        <div class="move-history">
+            <h3>Move History</h3>
+            <div id="move-list"></div>
+        </div>
+    </div>
+
+    <!-- Pawn Promotion Modal -->
+    <div class="modal" id="promotion-modal">
+        <div class="modal-content">
+            <h3>Choose promotion piece:</h3>
+            <div class="promotion-pieces" id="promotion-pieces"></div>
+        </div>
+    </div>
+
+    <!-- Game Over Modal -->
+    <div class="modal" id="game-over-modal">
+        <div class="modal-content">
+            <h2 id="game-over-title">Game Over</h2>
+            <p id="game-over-message"></p>
+            <button id="play-again-btn" class="btn btn-primary">Play Again</button>
+        </div>
+    </div>
+
+    <script src="js/chess-pieces.js"></script>
+    <script src="js/chess-logic.js"></script>
+    <script src="js/chess-ai.js"></script>
+    <script src="js/chess-ui.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

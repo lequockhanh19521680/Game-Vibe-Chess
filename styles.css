@@ -1,0 +1,493 @@
+/* ===== CSS Variables ===== */
+:root {
+    --primary-color: #4a90a4;
+    --primary-hover: #3a7a94;
+    --secondary-color: #6c757d;
+    --secondary-hover: #5a6268;
+    --light-square: #f0d9b5;
+    --dark-square: #b58863;
+    --highlight-color: rgba(255, 255, 0, 0.5);
+    --valid-move-color: rgba(0, 128, 0, 0.4);
+    --check-color: rgba(255, 0, 0, 0.5);
+    --last-move-color: rgba(155, 199, 0, 0.4);
+    --background-color: #1a1a2e;
+    --container-bg: #16213e;
+    --text-color: #e0e0e0;
+    --border-color: #333;
+}
+
+/* ===== Reset and Base Styles ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--background-color) 0%, #0f3460 100%);
+    min-height: 100vh;
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* ===== Container ===== */
+.container {
+    max-width: 900px;
+    width: 100%;
+}
+
+/* ===== Header ===== */
+header {
+    text-align: center;
+    padding: 20px 0;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    background: linear-gradient(45deg, #f0d9b5, #b58863);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== Game Info ===== */
+.game-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--container-bg);
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.player-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 150px;
+}
+
+.player-label {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+}
+
+.black-player .player-label {
+    color: #888;
+}
+
+.white-player .player-label {
+    color: #fff;
+}
+
+.captured-pieces {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    font-size: 1.2rem;
+    min-height: 30px;
+    justify-content: center;
+}
+
+.turn-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+#turn-display {
+    font-size: 1.3rem;
+    font-weight: bold;
+    padding: 10px 20px;
+    background: linear-gradient(45deg, var(--primary-color), var(--primary-hover));
+    border-radius: 25px;
+}
+
+#game-status {
+    font-size: 1rem;
+    color: #ffa500;
+    font-weight: bold;
+}
+
+/* ===== Game Container ===== */
+.game-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.board-container {
+    background: var(--container-bg);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* ===== Chess Board ===== */
+.board {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    width: min(80vw, 560px);
+    height: min(80vw, 560px);
+    border: 4px solid #8b4513;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.square {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: min(8vw, 50px);
+    cursor: pointer;
+    position: relative;
+    transition: all 0.15s ease;
+    user-select: none;
+}
+
+.square.light {
+    background-color: var(--light-square);
+}
+
+.square.dark {
+    background-color: var(--dark-square);
+}
+
+.square.selected {
+    background-color: var(--highlight-color) !important;
+}
+
+.square.valid-move::after {
+    content: '';
+    position: absolute;
+    width: 30%;
+    height: 30%;
+    background-color: var(--valid-move-color);
+    border-radius: 50%;
+}
+
+.square.valid-capture {
+    background-color: rgba(255, 100, 100, 0.4) !important;
+}
+
+.square.check {
+    background-color: var(--check-color) !important;
+}
+
+.square.last-move {
+    background-color: var(--last-move-color) !important;
+}
+
+.square:hover {
+    filter: brightness(1.1);
+}
+
+.piece {
+    font-size: inherit;
+    cursor: grab;
+    transition: transform 0.1s ease;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.piece:active {
+    cursor: grabbing;
+    transform: scale(1.1);
+}
+
+/* Coordinate labels */
+.square::before {
+    position: absolute;
+    font-size: 0.6rem;
+    font-weight: bold;
+    opacity: 0.7;
+}
+
+.square.file-label::before {
+    content: attr(data-file);
+    bottom: 2px;
+    right: 4px;
+}
+
+.square.rank-label::before {
+    content: attr(data-rank);
+    top: 2px;
+    left: 4px;
+}
+
+.square.light.file-label::before,
+.square.light.rank-label::before {
+    color: var(--dark-square);
+}
+
+.square.dark.file-label::before,
+.square.dark.rank-label::before {
+    color: var(--light-square);
+}
+
+/* ===== Controls ===== */
+.controls {
+    background: var(--container-bg);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.mode-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+}
+
+.mode-selector label {
+    font-weight: bold;
+}
+
+.mode-selector select {
+    padding: 10px 15px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    background: var(--background-color);
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 12px 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, var(--primary-color), var(--primary-hover));
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(74, 144, 164, 0.4);
+}
+
+.btn-secondary {
+    background: linear-gradient(45deg, var(--secondary-color), var(--secondary-hover));
+    color: white;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.4);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ===== Move History ===== */
+.move-history {
+    background: var(--container-bg);
+    padding: 15px 20px;
+    border-radius: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.move-history h3 {
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+
+#move-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 5px;
+    font-family: monospace;
+    font-size: 0.95rem;
+}
+
+.move-entry {
+    padding: 5px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+.move-number {
+    color: var(--primary-color);
+    margin-right: 5px;
+}
+
+/* ===== Modals ===== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--container-bg);
+    padding: 30px 40px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-content h2 {
+    margin-bottom: 15px;
+    color: var(--primary-color);
+}
+
+.modal-content h3 {
+    margin-bottom: 20px;
+}
+
+.promotion-pieces {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.promotion-piece {
+    font-size: 3rem;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.promotion-piece:hover {
+    background: var(--primary-color);
+    transform: scale(1.1);
+}
+
+#game-over-message {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .game-info {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .player-info {
+        flex-direction: row;
+        gap: 10px;
+    }
+    
+    .controls {
+        padding: 15px;
+    }
+    
+    .btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .board-container {
+        padding: 10px;
+    }
+}
+
+/* ===== AI Thinking Indicator ===== */
+.ai-thinking {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    padding: 10px;
+    background: rgba(74, 144, 164, 0.2);
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.ai-thinking.active {
+    display: flex;
+}
+
+.ai-thinking .spinner {
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ===== Scrollbar Styling ===== */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--background-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-hover);
+}
