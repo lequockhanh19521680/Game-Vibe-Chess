@@ -7,24 +7,153 @@
 let game;
 let ui;
 let ai;
-let gameMode = 'multiplayer';
+let gameMode = 'local'; // 'local', 'multiplayer', 'ai'
 let aiColor = COLORS.BLACK;
+let aiDifficulty = 'medium';
 let isAIThinking = false;
+
+// UI Elements
+let modeSelectionScreen;
+let gameScreen;
+let matchmakingModal;
 
 /**
  * Initialize the application
  */
 function init() {
     game = new ChessGame();
-    ui = new ChessUI(game);
     ai = new ChessAI('medium');
     
-    // Set up AI integration callbacks
-    ui.onMoveComplete = handleMoveComplete;
-    ui.onPromotionComplete = handlePromotionComplete;
-    ui.canInteract = canPlayerInteract;
+    // Get screen elements
+    modeSelectionScreen = document.getElementById('mode-selection-screen');
+    gameScreen = document.getElementById('game-screen');
+    matchmakingModal = document.getElementById('matchmaking-modal');
     
-    setupEventListeners();
+    setupModeSelectionListeners();
+}
+
+/**
+ * Setup mode selection event listeners
+ */
+function setupModeSelectionListeners() {
+    // Multiplayer button
+    document.getElementById('select-multiplayer-btn').addEventListener('click', () => {
+        startMatchmaking();
+    });
+    
+    // Local play button
+    document.getElementById('select-local-btn').addEventListener('click', () => {
+        gameMode = 'local';
+        startGame('Local Play');
+    });
+    
+    // AI difficulty buttons
+    document.querySelectorAll('.btn-ai-difficulty').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.btn-ai-difficulty').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            aiDifficulty = e.target.dataset.difficulty;
+        });
+    });
+    
+    // AI play button
+    document.getElementById('select-ai-btn').addEventListener('click', () => {
+        gameMode = 'ai';
+        ai.setDifficulty(aiDifficulty);
+        startGame(`AI - ${aiDifficulty.charAt(0).toUpperCase() + aiDifficulty.slice(1)}`);
+    });
+    
+    // Cancel matchmaking button
+    document.getElementById('cancel-matchmaking-btn').addEventListener('click', () => {
+        cancelMatchmaking();
+    });
+}
+
+/**
+ * Start matchmaking for multiplayer
+ */
+function startMatchmaking() {
+    matchmakingModal.classList.add('active');
+    
+    const statusEl = document.getElementById('matchmaking-status');
+    const messages = [
+        'Searching for players...',
+        'Finding a worthy opponent...',
+        'Connecting to game servers...',
+        'Almost there...'
+    ];
+    
+    let messageIndex = 0;
+    const messageInterval = setInterval(() => {
+        messageIndex = (messageIndex + 1) % messages.length;
+        statusEl.textContent = messages[messageIndex];
+    }, 2000);
+    
+    // Simulate matchmaking (in real implementation, this would connect to AWS backend)
+    // For now, we'll show the waiting message and then start a local game
+    setTimeout(() => {
+        clearInterval(messageInterval);
+        statusEl.textContent = 'Opponent found! Starting game...';
+        
+        setTimeout(() => {
+            matchmakingModal.classList.remove('active');
+            gameMode = 'multiplayer';
+            startGame('Multiplayer');
+        }, 1000);
+    }, 5000);
+}
+
+/**
+ * Cancel matchmaking
+ */
+function cancelMatchmaking() {
+    matchmakingModal.classList.remove('active');
+}
+
+/**
+ * Start the game with selected mode
+ */
+function startGame(modeDisplayName) {
+    // Hide mode selection, show game
+    modeSelectionScreen.style.display = 'none';
+    gameScreen.style.display = 'block';
+    
+    // Update mode display
+    document.getElementById('current-mode-display').textContent = modeDisplayName;
+    
+    // Initialize game and UI
+    game.reset();
+    
+    // Create UI if not exists, otherwise reset
+    if (!ui) {
+        ui = new ChessUI(game);
+        ui.onMoveComplete = handleMoveComplete;
+        ui.onPromotionComplete = handlePromotionComplete;
+        ui.canInteract = canPlayerInteract;
+        setupGameEventListeners();
+    } else {
+        ui.reset();
+    }
+    
+    isAIThinking = false;
+    updateUndoButton();
+}
+
+/**
+ * Go back to mode selection
+ */
+function backToModeSelection() {
+    gameScreen.style.display = 'none';
+    modeSelectionScreen.style.display = 'flex';
+    
+    // Reset game state
+    if (game) {
+        game.reset();
+    }
+    if (ui) {
+        ui.reset();
+    }
+    isAIThinking = false;
 }
 
 /**
@@ -57,22 +186,11 @@ function handlePromotionComplete() {
 }
 
 /**
- * Setup event listeners
+ * Setup game event listeners
  */
-function setupEventListeners() {
-    // Game mode selector
-    document.getElementById('game-mode').addEventListener('change', (e) => {
-        gameMode = e.target.value;
-        
-        if (gameMode.startsWith('ai-')) {
-            const difficulty = gameMode.split('-')[1];
-            ai.setDifficulty(difficulty);
-            gameMode = 'ai';
-        }
-        
-        // Reset game when mode changes
-        newGame();
-    });
+function setupGameEventListeners() {
+    // Back to menu button
+    document.getElementById('back-to-menu-btn').addEventListener('click', backToModeSelection);
     
     // New game button
     document.getElementById('new-game-btn').addEventListener('click', newGame);

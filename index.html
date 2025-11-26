@@ -7,9 +7,65 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
+    <!-- Mode Selection Screen -->
+    <div class="mode-selection-screen" id="mode-selection-screen">
+        <div class="mode-selection-container">
+            <header class="mode-header">
+                <h1>♔ Game Vibe Chess ♚</h1>
+                <p class="mode-subtitle">Select your game mode</p>
+            </header>
+            
+            <div class="mode-cards">
+                <div class="mode-card" id="multiplayer-card">
+                    <div class="mode-icon">👥</div>
+                    <h2>Multiplayer</h2>
+                    <p>Play against another player online</p>
+                    <button class="btn btn-primary mode-btn" id="select-multiplayer-btn">Play Online</button>
+                </div>
+                
+                <div class="mode-card" id="local-card">
+                    <div class="mode-icon">🎮</div>
+                    <h2>Local Play</h2>
+                    <p>Play against a friend on the same device</p>
+                    <button class="btn btn-primary mode-btn" id="select-local-btn">Play Local</button>
+                </div>
+                
+                <div class="mode-card" id="ai-card">
+                    <div class="mode-icon">🤖</div>
+                    <h2>vs AI</h2>
+                    <p>Challenge the computer</p>
+                    <div class="ai-difficulty-selector">
+                        <button class="btn btn-ai-difficulty" data-difficulty="easy">Easy</button>
+                        <button class="btn btn-ai-difficulty active" data-difficulty="medium">Medium</button>
+                        <button class="btn btn-ai-difficulty" data-difficulty="hard">Hard</button>
+                    </div>
+                    <button class="btn btn-primary mode-btn" id="select-ai-btn">Play vs AI</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Matchmaking Modal -->
+    <div class="modal" id="matchmaking-modal">
+        <div class="modal-content matchmaking-content">
+            <div class="matchmaking-spinner"></div>
+            <h2>Finding Opponent</h2>
+            <p class="matchmaking-status" id="matchmaking-status">Searching for players...</p>
+            <div class="matchmaking-progress">
+                <div class="matchmaking-progress-bar" id="matchmaking-progress-bar"></div>
+            </div>
+            <button class="btn btn-secondary" id="cancel-matchmaking-btn">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Game Screen (hidden initially) -->
+    <div class="container game-screen" id="game-screen" style="display: none;">
         <header>
-            <h1>♔ Game Vibe Chess ♚</h1>
+            <div class="header-content">
+                <button class="btn btn-back" id="back-to-menu-btn">← Menu</button>
+                <h1>♔ Game Vibe Chess ♚</h1>
+                <span class="current-mode" id="current-mode-display"></span>
+            </div>
         </header>
         
         <div class="game-info">
@@ -34,15 +90,6 @@
         </div>
 
         <div class="controls">
-            <div class="mode-selector">
-                <label for="game-mode">Game Mode:</label>
-                <select id="game-mode">
-                    <option value="multiplayer">Multiplayer (2 Players)</option>
-                    <option value="ai-easy">AI - Easy</option>
-                    <option value="ai-medium">AI - Medium</option>
-                    <option value="ai-hard">AI - Hard</option>
-                </select>
-            </div>
             <div class="button-group">
                 <button id="new-game-btn" class="btn btn-primary">New Game</button>
                 <button id="undo-btn" class="btn btn-secondary">Undo Move</button>
