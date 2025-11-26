@@ -19,7 +19,41 @@ function init() {
     ui = new ChessUI(game);
     ai = new ChessAI('medium');
     
+    // Set up AI integration callbacks
+    ui.onMoveComplete = handleMoveComplete;
+    ui.onPromotionComplete = handlePromotionComplete;
+    ui.canInteract = canPlayerInteract;
+    
     setupEventListeners();
+}
+
+/**
+ * Check if player can interact with the board
+ */
+function canPlayerInteract() {
+    if (isAIThinking) return false;
+    if (gameMode === 'ai' && game.currentTurn === aiColor) return false;
+    return true;
+}
+
+/**
+ * Handle move completion - trigger AI if needed
+ */
+function handleMoveComplete() {
+    updateUndoButton();
+    if (gameMode === 'ai' && game.currentTurn === aiColor && !game.gameOver) {
+        setTimeout(() => makeAIMove(), 100);
+    }
+}
+
+/**
+ * Handle promotion completion - trigger AI if needed
+ */
+function handlePromotionComplete() {
+    updateUndoButton();
+    if (gameMode === 'ai' && game.currentTurn === aiColor && !game.gameOver) {
+        setTimeout(() => makeAIMove(), 100);
+    }
 }
 
 /**
@@ -136,39 +170,6 @@ async function makeAIMove() {
     isAIThinking = false;
     updateUndoButton();
 }
-
-// Override UI's handleSquareClick for AI integration
-const originalHandleSquareClick = ChessUI.prototype.handleSquareClick;
-ChessUI.prototype.handleSquareClick = function(row, col) {
-    // Don't allow moves during AI's turn
-    if (gameMode === 'ai' && game.currentTurn === aiColor) {
-        return;
-    }
-    
-    if (isAIThinking) return;
-    
-    originalHandleSquareClick.call(this, row, col);
-    
-    // Trigger AI move after player's move
-    if (gameMode === 'ai' && game.currentTurn === aiColor && !game.gameOver) {
-        setTimeout(() => makeAIMove(), 100);
-    }
-    
-    updateUndoButton();
-};
-
-// Override UI's handlePromotion for AI integration
-const originalHandlePromotion = ChessUI.prototype.handlePromotion;
-ChessUI.prototype.handlePromotion = function(pieceType) {
-    originalHandlePromotion.call(this, pieceType);
-    
-    // Trigger AI move after player's promotion
-    if (gameMode === 'ai' && game.currentTurn === aiColor && !game.gameOver) {
-        setTimeout(() => makeAIMove(), 100);
-    }
-    
-    updateUndoButton();
-};
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', init);

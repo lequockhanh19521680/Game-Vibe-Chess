@@ -474,6 +474,13 @@ header h1 {
 }
 
 /* ===== Scrollbar Styling ===== */
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) var(--background-color);
+}
+
+/* Chrome, Edge, Safari */
 ::-webkit-scrollbar {
     width: 8px;
 }

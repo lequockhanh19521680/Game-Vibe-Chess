@@ -160,9 +160,15 @@ class ChessAI {
             let scoreA = 0;
             let scoreB = 0;
             
-            // Prioritize captures
-            if (a.to.capture) scoreA += 10 + (PIECE_VALUES[game.getPiece(a.to.row, a.to.col)?.type] || 0) / 100;
-            if (b.to.capture) scoreB += 10 + (PIECE_VALUES[game.getPiece(b.to.row, b.to.col)?.type] || 0) / 100;
+            // Prioritize captures - use move's capture flag and get piece value from board
+            if (a.to.capture) {
+                const capturedPieceA = game.getPiece(a.to.row, a.to.col);
+                scoreA += 10 + (capturedPieceA ? PIECE_VALUES[capturedPieceA.type] / 100 : 0);
+            }
+            if (b.to.capture) {
+                const capturedPieceB = game.getPiece(b.to.row, b.to.col);
+                scoreB += 10 + (capturedPieceB ? PIECE_VALUES[capturedPieceB.type] / 100 : 0);
+            }
             
             // Prioritize center control
             const centerDist = (row, col) => Math.abs(row - 3.5) + Math.abs(col - 3.5);

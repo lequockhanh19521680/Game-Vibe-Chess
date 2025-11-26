@@ -22,6 +22,11 @@ class ChessUI {
         this.flipped = false;
         this.pendingPromotion = null;
         
+        // Callbacks for integration with main app (AI mode, etc.)
+        this.onMoveComplete = null;
+        this.onPromotionComplete = null;
+        this.canInteract = null;
+        
         this.initBoard();
     }
 
@@ -126,6 +131,11 @@ class ChessUI {
     handleSquareClick(row, col) {
         if (this.game.gameOver) return;
         
+        // Check if interaction is allowed (e.g., not AI's turn)
+        if (this.canInteract && !this.canInteract()) {
+            return;
+        }
+        
         const piece = this.game.getPiece(row, col);
         
         // If a piece is already selected
@@ -152,6 +162,11 @@ class ChessUI {
                 // Check for game over
                 if (this.game.gameOver) {
                     this.showGameOverModal();
+                }
+                
+                // Notify move complete
+                if (this.onMoveComplete) {
+                    this.onMoveComplete();
                 }
                 
                 return;
@@ -226,6 +241,11 @@ class ChessUI {
         
         if (this.game.gameOver) {
             this.showGameOverModal();
+        }
+        
+        // Notify promotion complete
+        if (this.onPromotionComplete) {
+            this.onPromotionComplete();
         }
     }
 
