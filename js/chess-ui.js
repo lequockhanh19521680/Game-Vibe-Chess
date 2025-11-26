@@ -81,7 +81,8 @@ class ChessUI {
             
             // Render piece
             if (piece) {
-                square.innerHTML = `<span class="piece">${piece.symbol}</span>`;
+                const pieceClass = piece.color === COLORS.BLACK ? 'piece black-piece' : 'piece';
+                square.innerHTML = `<span class="${pieceClass}">${piece.symbol}</span>`;
             } else {
                 square.innerHTML = '';
             }
